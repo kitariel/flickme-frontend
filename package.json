@@ -1,14 +1,14 @@
 {
-  "name": "chatyuri-app",
+  "name": "chatapp",
   "version": "1.0.0",
-  "description": "Chat App built with ReactJS, Node and Socket.io",
+  "description": "Chat App built with ReactJS, Node, RethinkDB and Socket.io",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --mode development --open --hot",
     "build": "webpack --mode production"
   },
   "keywords": [],
-  "author": "Dan Quesada III",
+  "author": "Kit, Eugene and Dan",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
