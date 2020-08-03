@@ -1,31 +1,27 @@
 import React from 'react';
 import ReactEmoji from 'react-emoji';
 
-const Message = ({msg: { username, message, time}, name}) => {
+const Message = ({msg: { sender, message, date}, currentUserName}) => {
     let currentUser = false;
     let admin = false;
 
-    // gi butangan lang nako ug slice kay sa local if mag manual search sa chatroom kay makasud gihapon bisag 
-    // lapas sa max character sa name
-    // sa URL if sa local nya if lapas ang max char kay makita gyapon sa URL pero naka slice na sya sa chatwindow
-    const trimmedName = name.trim().toLowerCase().slice(0, 10);
-
-    if(username === trimmedName) {
+    if(sender === currentUserName) {
         currentUser = true;
     }
 
-    if(username === 'Admin') {
+    if(sender === 'Admin') {
         admin = true;
     }
 
     return (
         <div className={ admin ? 'msg_con admin' : 'msg_con' }>
             <div className={ currentUser ? 'msg_box current' : 'msg_box' }>
-                <small>{ currentUser ? trimmedName : username }</small>
+                <small>{ currentUser ? currentUserName : sender }</small>
                 <div className="msg">
                     <p>{ReactEmoji.emojify(message)}</p>
                 </div>
-                <span>{time}</span>
+                <span>{new Date(date).toLocaleTimeString()}</span>
+                {/* <span>{date}</span> */}
             </div>
         </div>
     )

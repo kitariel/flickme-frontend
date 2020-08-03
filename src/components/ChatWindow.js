@@ -7,11 +7,11 @@ const ChatWindow = ({messagesArray, name, setNavOpen}) => {
     return (
         <ScrollToBottom>
             <div className="chat_window" onClick={e => setNavOpen(false)}>
-                { messagesArray.map((msg, i) => {
+                { messagesArray.length > 0 ? messagesArray.map((msg, i) => {
                     return (<div key={i}>
-                        <Message msg={msg} name={name}/>
+                        <Message msg={msg} currentUserName={name} />
                     </div>)
-                }) }
+                }) : null }
             </div>
         </ScrollToBottom>
     )

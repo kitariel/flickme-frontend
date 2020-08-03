@@ -16,14 +16,14 @@ const Chatroom = (props) => {
 
     let name = localStorage.getItem('username')
     let room = localStorage.getItem('room')
-    let userId = localStorage.getItem('userId')
+    let userId = localStorage.getItem('objectToken')
     // let isLoggedIn = localStorage.getItem('isLoggedIn')
 
     useEffect(() => {
         let newUser = {
+            // id: userId,
             username: name,
-            room,
-            date: new Date().toISOString()
+            room
         }
 
         socket.emit('userJoined', newUser, (error) => {
@@ -41,17 +41,42 @@ const Chatroom = (props) => {
 
         socket.on('usersOnline', ({ users }) => {
             setUsers(users);
-          });
+        });
 
         return () => {
-            // localStorage.removeItem('username')
-            // localStorage.removeItem('room')
-            // localStorage.removeItem('isLoggedIn')
             socket.emit('disconnect');
             socket.off();
         }
     }, [])
 
+    useEffect( () => {
+        socket.on('getRoomMessages', (data) => {
+            // setMessagesArray([...data]);
+            let result = data.length > 0 && data
+                .filter( checkRoom => checkRoom.room === room )
+
+                // .sort((a, b) => b.date - a.date)
+
+            if (result.length > 0) {
+                setMessagesArray(msgs => [...result, ...msgs]);
+            }
+        });
+        // const result = axios.get('http://localhost:7575/messages')
+        // .then( res => {
+        //     console.log(res.data)
+        //     let result = res.data.length > 0 && res.data
+        //         .filter( checkRoom => {
+        //             return checkRoom.room === room
+        //         })
+
+        //     if (result.length > 0) {
+        //         setMessagesArray([...result])
+        //         console.log(result)
+        //     }
+        // })
+
+        // socket.emit('sendMessage', message, () => setMessage(''));
+    }, []);
 
     const sendMessage = e => {
         e.preventDefault();
@@ -61,14 +86,15 @@ const Chatroom = (props) => {
                 userId,
                 message,
                 sender: name,
-                room
+                room,
+                date: new Date().toISOString()
             }
 
             try {
                 const result = axios.post('http://localhost:7575/messages', messageData)
                 console.log(`added to message table: ${result}`)
     
-                socket.emit('sendMessage', message, () => setMessage(''));
+                socket.emit('sendMessage', messageData, () => setMessage(''));
             } catch (e) {
                 console.log(e);
             }
