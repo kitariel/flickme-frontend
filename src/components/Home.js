@@ -44,9 +44,10 @@ const Home = (props) => {
         }
 
         try {
-            const result = axios.post('http://localhost:7575/users', newUser)
+            const result = axios.post('http://localhost:7575/createUsers', newUser)
             .then(res => {
-                localStorage.setItem('userId', res.data.userId)
+                // console.log(res.data[0].results.data)
+                // localStorage.setItem(res.data[0].results.data)
             })
             // console.log(`added to db: ${result}`)
 

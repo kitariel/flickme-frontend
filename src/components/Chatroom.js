@@ -23,7 +23,6 @@ const Chatroom = (props) => {
         let newUser = {
             username: name,
             room,
-            date: new Date().toISOString()
         }
 
         socket.emit('userJoined', newUser, (error) => {
@@ -53,7 +52,7 @@ const Chatroom = (props) => {
     }, [])
 
 
-    const sendMessage = e => {
+    const sendMessage = (e) => {
         e.preventDefault();
         if(message) {
             
@@ -61,9 +60,11 @@ const Chatroom = (props) => {
                 userId,
                 message,
                 sender: name,
-                room
+                room,
+                date: new Date().toISOString()
             }
 
+            
             try {
                 const result = axios.post('http://localhost:7575/messages', messageData)
                 console.log(`added to message table: ${result}`)
