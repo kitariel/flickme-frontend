@@ -4,6 +4,7 @@ import axios from 'axios'
 
 const Home = (props) => {
     let [nameLength, setUsernameLength] = useState(7);
+    const [error, setError] = useState('');
     const [username, setUsername] = useState('');
     const [room, setRoom] = useState('JavaScript');
     const joinRef = useRef(null);
@@ -39,23 +40,40 @@ const Home = (props) => {
         let newUser = {
             username: username || localStorage.getItem('username'),
             room: room || localStorage.getItem('room'),
-            isLoggedIn: isLoggedIn || localStorage.getItem('isLoggedIn'),
-            date: new Date().toISOString()
+            // isLoggedIn: isLoggedIn || localStorage.getItem('isLoggedIn'),
+            // date: new Date().toISOString()
+            isOnline: false
         }
 
         try {
             const result = axios.post('http://localhost:7575/createUsers', newUser)
-            .then(res => {
-                // console.log(res.data[0].results.data)
-                // localStorage.setItem(res.data[0].results.data)
-            })
-            // console.log(`added to db: ${result}`)
+            // .then(res => {
+            //     // console.log(res.data[0].results.data)
+            //     localStorage.setItem(res.data[0].results.data)
+            // })
+                .then( res => {
+                    if ( res.data[0].isAccess ) {
+                        // console.log(res.data[0].results.data)
+                        // globalDispatch({ type: "username", value: user });
+                        // globalDispatch({ type: "chatRoom", value: room });
+                        // globalDispatch({ type: "isOnline", value: false });
+                        localStorage.setItem('username', res.data.username)
+                        localStorage.setItem('room', res.data.room)
+                        localStorage.setItem('isOnline', false)
+                        localStorage.setItem('userId', res.data[0].results.data)    
+                    
+                        props.history.push("/login");
+                    } else {
+                        setError("already exist / try a new one");
+                        alert("user exist!!!");
+                    }
+                })
+            console.log(`added to db: ${result}`)
 
             localStorage.setItem('username', username)
             localStorage.setItem('room', room)
             localStorage.setItem('isLoggedIn', isLoggedIn)
             
-            props.history.push('chat');
         } catch (e) {
             console.log(e);
         }
@@ -66,6 +84,7 @@ const Home = (props) => {
         <div className="chat_home">
             <form onSubmit={handleLogin}>
                 <span>{nameLength}/7</span>
+                <p>{ error }</p>
                 <input 
                     type="text"
                     value={username}
